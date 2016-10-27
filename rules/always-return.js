@@ -16,6 +16,14 @@ function isThenCallExpression (node) {
   )
 }
 
+function isCatchCallExpression (node) {
+  return (
+  node.type === 'CallExpression' &&
+  node.callee.type === 'MemberExpression' &&
+  node.callee.property.name === 'catch'
+  )
+}
+
 function isFirstArgument (node) {
   return (
   node.parent &&
@@ -24,11 +32,35 @@ function isFirstArgument (node) {
   )
 }
 
+function isSecondArgument (node) {
+  return (
+  node.parent &&
+  node.parent.arguments &&
+  node.parent.arguments[1] === node
+  )
+}
+
 function isInlineThenFunctionExpression (node) {
   return (
   isFunctionWithBlockStatement(node) &&
   isThenCallExpression(node.parent) &&
   isFirstArgument(node)
+  )
+}
+
+function isInlineCatchFunctionExpression (node) {
+  return (
+  isFunctionWithBlockStatement(node) &&
+  isCatchCallExpression(node.parent) &&
+  isFirstArgument(node)
+  )
+}
+
+function isInlineThenErrorFunctionExpression (node) {
+  return (
+  isFunctionWithBlockStatement(node) &&
+  isThenCallExpression(node.parent) &&
+  isSecondArgument(node)
   )
 }
 
@@ -100,7 +132,7 @@ module.exports = {
       onCodePathEnd: function (path, node) {
         var funcInfo = funcInfoStack.pop()
 
-        if (!isInlineThenFunctionExpression(node)) {
+        if (!(isInlineThenFunctionExpression(node) || isInlineCatchFunctionExpression(node) || isInlineThenErrorFunctionExpression(node))) {
           return
         }
 
@@ -115,8 +147,12 @@ module.exports = {
               if (funcInfo.branchInfoMap[prevSegment.id].good) return
             }
 
+            var message = isInlineThenFunctionExpression(node) ? 'Each then() should return a value or throw'
+              : isInlineCatchFunctionExpression(node) ? 'Each catch() should return a value or throw'
+              : 'Each then() error handler should return a value or throw'
+
             context.report({
-              message: 'Each then() should return a value or throw',
+              message: message,
               loc: branch.loc
             })
           }
