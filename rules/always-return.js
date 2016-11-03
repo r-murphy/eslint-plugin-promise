@@ -104,7 +104,10 @@ module.exports = {
     function markCurrentBranchAsGood () {
       var funcInfo = peek(funcInfoStack)
       var currentBranchID = peek(funcInfo.branchIDStack)
-      funcInfo.branchInfoMap[currentBranchID].good = true
+      if (funcInfo.branchInfoMap[currentBranchID]) {
+        funcInfo.branchInfoMap[currentBranchID].good = true
+      }
+      // else unreachable code
     }
 
     return {
