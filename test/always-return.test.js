@@ -25,6 +25,9 @@ ruleTester.run('always-return', rule, {
     { code: 'hey.then(x => { if (x) { return x; } throw new Error("no x"); })', parserOptions: parserOptions },
     { code: 'hey.then(x => { var f = function() { }; return f; })', parserOptions: parserOptions },
     { code: 'hey.then(x => { if (x) { return x; } else { return x; } })', parserOptions: parserOptions },
+    { code: 'hey.then(x => { return x ? 1 : 2 })', parserOptions: parserOptions }, // basic ternary
+    { code: 'hey.then(x => { return {y: (x ? 1 : 2)}; })', parserOptions: parserOptions }, // ternay inside literal
+    { code: 'hey.then(x => { if (x) { return x ? 1 : 2; } else { return {y: (x ? 1 : 2)}; } })', parserOptions: parserOptions }, // ternaries in branches
     { code: 'hey.then(x => { return x; var y = "unreachable"; })', parserOptions: parserOptions },
     { code: 'hey.then(x => { return x; return "unreachable"; })', parserOptions: parserOptions },
     // { code: 'hey.then(x => { return; }, err=>{ log(err); })', parserOptions: parserOptions },
