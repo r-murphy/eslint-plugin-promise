@@ -147,11 +147,11 @@ module.exports = {
           var branch = funcInfo.branchInfoMap[id]
           if (!branch.good) {
             // check shortcircuit syntax like `x && x()` and `y || x()``
-            var prevSegments = segment.prevSegments
-            for (var ii = prevSegments.length - 1; ii >= 0; --ii) {
-              var prevSegment = prevSegments[ii]
-              if (funcInfo.branchInfoMap[prevSegment.id].good) return
-            }
+            // var prevSegments = segment.prevSegments
+            // for (var ii = prevSegments.length - 1; ii >= 0; --ii) {
+            //   var prevSegment = prevSegments[ii]
+            //   if (funcInfo.branchInfoMap[prevSegment.id].good) return
+            // }
 
             var message = isInlineThenFunctionExpression(node) ? 'Each then() should return a value or throw'
               : isInlineCatchFunctionExpression(node) ? 'Each catch() should return a value or throw'
