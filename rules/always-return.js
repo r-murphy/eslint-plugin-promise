@@ -156,7 +156,7 @@ module.exports = {
 
             context.report({
               message: message,
-              loc: branch.loc
+              loc: node.loc
             })
           }
         })
