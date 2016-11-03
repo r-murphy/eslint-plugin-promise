@@ -116,8 +116,11 @@ module.exports = {
 
       onCodePathSegmentStart: function (segment, node) {
         var funcInfo = peek(funcInfoStack)
+        var parentSegment = segment.prevSegments[0] || {}
+        var parentGood = (funcInfo.branchInfoMap[parentSegment.id] || {}).good
+        var good = parentGood || false
         funcInfo.branchIDStack.push(segment.id)
-        funcInfo.branchInfoMap[segment.id] = {good: false, loc: node.loc}
+        funcInfo.branchInfoMap[segment.id] = {good: good, loc: node.loc}
       },
 
       onCodePathSegmentEnd: function (segment, node) {
